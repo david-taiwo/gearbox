@@ -6,34 +6,141 @@ import {
   Heart,
   User,
   ChevronDown,
+  ChevronRight,
   Phone,
 } from "lucide-react";
-
 import gearbox_logo from "../../assets/gearbox_logo.png";
+// ─── DATA ──────────
+import { categories, navLinks } from "../../data/categories";
 
-// Product categories for the dropdown menu in the navbar
-const categories = [
-  "Computer & Laptop",
-  "Computer Accessories",
-  "SmartPhone",
-  "Headphone",
-  "Mobile Accessories",
-  "Gaming Console",
-  "Camera & Photo",
-  "TV & Homes Appliances",
-  "Watches & Accessories",
-  "GPS & Navigation",
-  "Wearable Technology",
-];
+// ─── MEGA MENU COMPONENT ─────────────────────────────────────────────────────
+// We pull the mega menu out into its own component to keep Navbar clean.
+// It receives the categories data as a prop.
 
-// The main nav Links
-const navLinks = [
-  { label: "Home", path: "/" },
-  { label: "Compare", path: "/compare" },
-  { label: "Blog", path: "/blog" },
-  { label: "FAQ", path: "/faq" },
-  { label: "Contact Us", path: "/contact" },
-];
+function MegaMenu() {
+  // These two states track WHICH category and subcategory the user is hovering.
+  // null means nothing is hovered yet.
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeSubcategory, setActiveSubcategory] = useState(null);
+
+  // Find the full category object that matches the currently hovered label
+  const activeCategoryData = categories.find((c) => c.label === activeCategory);
+
+  // Find the full subcategory object that matches the currently hovered label
+  const activeSubcategoryData = activeCategoryData?.subcategories.find(
+    (s) => s.label === activeSubcategory,
+  );
+
+  return (
+    <div className="absolute top-full left-0 bg-white text-gray-800 shadow-2xl z-50 flex">
+      {/* ── LEVEL 1: Main Categories ── */}
+      <ul className="w-56 py-2 border-r border-gray-100">
+        {categories.map((cat) => (
+          <li
+            key={cat.label}
+            // When the mouse enters a category row, set it as active
+            // and reset the subcategory so Level 3 closes
+            onMouseEnter={() => {
+              setActiveCategory(cat.label);
+              setActiveSubcategory(null);
+            }}
+            className={`flex items-center justify-between px-4 py-2 text-sm cursor-pointer transition-colors
+              ${
+                activeCategory === cat.label
+                  ? "bg-blue-50 text-[#2966DC] font-semibold"
+                  : "hover:bg-blue-50 hover:text-[#2966DC] "
+              }`}
+          >
+            <Link
+              to={`/products?category=${encodeURIComponent(cat.label)}`}
+              className="flex-1"
+            >
+              {cat.label}
+            </Link>
+            {cat.subcategories.length > 0 && (
+              <ChevronRight className="w-4 h-4 opacity-50 shrink-0" />
+            )}
+          </li>
+        ))}
+        {/* View all link at the bottom */}
+        <li className="border-t border-gray-100 mt-1">
+          <Link
+            to="/products"
+            className="block px-4 py-2 text-sm text-[#2966DC] font-semibold hover:bg-blue-50"
+          >
+            View all
+          </Link>
+        </li>
+      </ul>
+
+      {/* ── LEVEL 2: Subcategories ── */}
+      {/* Only shows when a category is being hovered */}
+      {activeCategoryData && (
+        <ul className="w-52 py-2 border-r border-gray-100">
+          {activeCategoryData.subcategories.map((sub) => (
+            <li
+              key={sub.label}
+              onMouseEnter={() => setActiveSubcategory(sub.label)}
+              className={`flex items-center justify-between px-4 py-2 text-sm cursor-pointer transition-colors
+                ${
+                  activeSubcategory === sub.label
+                    ? "bg-blue-50 text-[#2966DC] font-semibold"
+                    : "hover:bg-blue-50 hover:text-[#2966DC]"
+                }`}
+            >
+              <Link
+                to={`/products?category=${encodeURIComponent(activeCategoryData.label)}&sub=${encodeURIComponent(sub.label)}`}
+                className="flex-1"
+              >
+                {sub.label}
+              </Link>
+              {sub.items.length > 0 && (
+                <ChevronRight className="w-4 h-4 opacity-50" />
+              )}
+            </li>
+          ))}
+          {/* View all for this category */}
+          <li className="border-t border-gray-100 mt-1">
+            <Link
+              to={`/products?category=${encodeURIComponent(activeCategoryData.label)}`}
+              className="block px-4 py-2 text-sm text-[#2966DC] font-semibold hover:bg-blue-50"
+            >
+              View all
+            </Link>
+          </li>
+        </ul>
+      )}
+
+      {/* ── LEVEL 3: Items ── */}
+      {/* Only shows when a subcategory is being hovered */}
+      {activeSubcategoryData && (
+        <ul className="w-52 py-2">
+          {activeSubcategoryData.items.map((item) => (
+            <li key={item}>
+              <Link
+                to={`/products?category=${encodeURIComponent(activeCategoryData.label)}&sub=${encodeURIComponent(activeSubcategory)}&item=${encodeURIComponent(item)}`}
+                className="block px-4 py-2 text-sm hover:bg-blue-50 hover:text-[#2966DC] transition-colors"
+              >
+                {item}
+              </Link>
+            </li>
+          ))}
+          {/* See more at the bottom */}
+          <li className="border-t border-gray-100 mt-1">
+            <Link
+              to={`/products?category=${encodeURIComponent(activeCategoryData.label)}&sub=${encodeURIComponent(activeSubcategory)}`}
+              className="block px-4 py-2 text-sm text-[#2966DC] font-semibold hover:bg-blue-50"
+            >
+              See more
+            </Link>
+          </li>
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ─── NAVBAR COMPONENT ────────────────────────────────────────────────────────
 
 function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,28 +156,28 @@ function Navbar() {
 
   return (
     <header className="w-full shadow-md sticky top-0 z-50 bg-white">
-      {/* -- TOP ROW -- */}
-      <div className="max-w-[1440px] mx-auto px-15 py-3 flex items-center gap-4">
-        {/* logo */}
-        <Link to={"/"} className="flex items-center">
-          <span className="">
-            <img src={gearbox_logo} />
-          </span>
+      {/* ── TOP ROW ── */}
+      <div className="max-w-360 mx-auto px-15 py-3 flex items-center gap-4">
+        {/* Logo */}
+        <Link to="/" className="flex items-center">
+          <img src={gearbox_logo} alt="Gearbox Logo" className="h-8" />
         </Link>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex flex-1 max-w-2xl mx-auto">
-          <div className="relative flex-1 flex items-center">
-            <Search className="text-gray-500" strokeWidth={1} />
+        <form onSubmit={handleSearch} className="flex flex-1 max-w-xl mx-auto">
+          <div className="relative flex-1 flex items-center border border-gray-300 rounded-l-md px-3">
+            <Search
+              className="text-gray-400 w-4 h-4 shrink-0"
+              strokeWidth={1.5}
+            />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search"
-              className="flex-1 px-4 py-2 text-md text-gray-500 outline-none focus:border-[#2966DC] "
+              className="flex-1 px-3 py-2 text-sm text-gray-600 outline-none"
             />
           </div>
-
           <button
             type="submit"
             className="bg-[#2966DC] text-white px-6 py-2 rounded-r-md text-sm font-semibold hover:bg-blue-700 transition-colors"
@@ -101,51 +208,34 @@ function Navbar() {
           </Link>
         </div>
       </div>
-      {/* -- BOTTOM ROW */}
+
+      {/* ── BOTTOM ROW ── */}
       <div className="bg-[#1a1a2e] text-white">
-        <div className="max-w-[1440px] mx-auto, px-15 py-0 flex items-center justify-between">
-          {/* Nav Links */}
+        <div className="max-w-360 mx-auto px-15 py-0 flex items-center justify-between">
           <nav className="flex items-center">
-            {/* home */}
+            {/* Home */}
             <Link
-              to={"/"}
-              className="px-4 py-3 text-sm font-medium text-[#2966DC] border-b-2 border-[#2966DC] hover:text-[#2966DC] transition-colors"
+              to="/"
+              className="px-4 py-3 text-sm font-medium text-[#2966DC] border-b-2 border-[#2966DC]"
             >
               Home
             </Link>
-            {/* products with mega menu */}
+
+            {/* Products dropdown — the whole div tracks hover */}
             <div
               className="relative"
               onMouseEnter={() => setShowMegaMenu(true)}
               onMouseLeave={() => setShowMegaMenu(false)}
             >
-              <button className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center">
-                Products <ChevronDown className="ml-1" strokeWidth={1.5} />
+              <button className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center gap-1">
+                Products <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
               </button>
-              {/* mega menu dropdown */}
-              {showMegaMenu && (
-                <div className="absolute top-full left-0 bg-white text-gray-800 shadow-xl rounded-b-lg z-50 w-56 py-2">
-                  {categories.map((category) => (
-                    <Link
-                      key={category}
-                      to={`/products?category=${encodeURIComponent(category)}`}
-                      className="block px-4 py-2 text-sm hover:bg-blue-50 hover:text-[#2966DC] transition-colors"
-                    >
-                      {category}
-                    </Link>
-                  ))}
-                  <div className="border-t mt-1 border-gray-200 pt-1">
-                    <Link
-                      to={"/products"}
-                      className="block px-4 py-4 text-sm text-[#2966DC]  hover:bg-blue-50"
-                    >
-                      View all
-                    </Link>
-                  </div>
-                </div>
-              )}
+
+              {/* MegaMenu renders here, still inside the hover zone */}
+              {showMegaMenu && <MegaMenu />}
             </div>
-            {/* Other nav links */}
+
+            {/* Rest of nav links */}
             {navLinks.slice(1).map((link) => (
               <Link
                 key={link.path}
@@ -156,9 +246,10 @@ function Navbar() {
               </Link>
             ))}
           </nav>
-          {/* Phone Number */}
+
+          {/* Phone */}
           <span className="text-sm text-gray-300 flex gap-2 items-center">
-            <Phone strokeWidth={1.5} />
+            <Phone className="w-4 h-4" strokeWidth={1.5} />
             (+234) 901 237 9054
           </span>
         </div>

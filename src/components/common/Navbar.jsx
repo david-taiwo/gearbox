@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Phone } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  Heart,
+  User,
+  ChevronDown,
+  Phone,
+} from "lucide-react";
 
 import gearbox_logo from "../../assets/gearbox_logo.png";
 
@@ -25,7 +32,7 @@ const navLinks = [
   { label: "Compare", path: "/compare" },
   { label: "Blog", path: "/blog" },
   { label: "FAQ", path: "/faq" },
-  { label: "Contact Us", path: "/contsct" },
+  { label: "Contact Us", path: "/contact" },
 ];
 
 function Navbar() {
@@ -42,7 +49,7 @@ function Navbar() {
 
   return (
     <header className="w-full shadow-md sticky top-0 z-50 bg-white">
-      {/* -- Top Row -- */}
+      {/* -- TOP ROW -- */}
       <div className="max-w-[1440px] mx-auto px-15 py-3 flex items-center gap-4">
         {/* logo */}
         <Link to={"/"} className="flex items-center">
@@ -92,6 +99,68 @@ function Navbar() {
           >
             <User strokeWidth={1.5} />
           </Link>
+        </div>
+      </div>
+      {/* -- BOTTOM ROW */}
+      <div className="bg-[#1a1a2e] text-white">
+        <div className="max-w-[1440px] mx-auto, px-15 py-0 flex items-center justify-between">
+          {/* Nav Links */}
+          <nav className="flex items-center">
+            {/* home */}
+            <Link
+              to={"/"}
+              className="px-4 py-3 text-sm font-medium text-[#2966DC] border-b-2 border-[#2966DC] hover:text-[#2966DC] transition-colors"
+            >
+              Home
+            </Link>
+            {/* products with mega menu */}
+            <div
+              className="relative"
+              onMouseEnter={() => setShowMegaMenu(true)}
+              onMouseLeave={() => setShowMegaMenu(false)}
+            >
+              <button className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center">
+                Products <ChevronDown className="ml-1" strokeWidth={1.5} />
+              </button>
+              {/* mega menu dropdown */}
+              {showMegaMenu && (
+                <div className="absolute top-full left-0 bg-white text-gray-800 shadow-xl rounded-b-lg z-50 w-56 py-2">
+                  {categories.map((category) => (
+                    <Link
+                      key={category}
+                      to={`/products?category=${encodeURIComponent(category)}`}
+                      className="block px-4 py-2 text-sm hover:bg-blue-50 hover:text-[#2966DC] transition-colors"
+                    >
+                      {category}
+                    </Link>
+                  ))}
+                  <div className="border-t mt-1 border-gray-200 pt-1">
+                    <Link
+                      to={"/products"}
+                      className="block px-4 py-4 text-sm text-[#2966DC]  hover:bg-blue-50"
+                    >
+                      View all
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Other nav links */}
+            {navLinks.slice(1).map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          {/* Phone Number */}
+          <span className="text-sm text-gray-300 flex gap-2 items-center">
+            <Phone strokeWidth={1.5} />
+            (+234) 901 237 9054
+          </span>
         </div>
       </div>
     </header>

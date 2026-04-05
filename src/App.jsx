@@ -1,10 +1,31 @@
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ProductPage from "./pages/ProductPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import LoginPage from "./pages/LoginPage";
+import ComparePage from "./pages/ComparePage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import AccountDashboardPage from "./pages/AccountDashboardPage";
+import WishlistPage from "./pages/WishlistPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Gearbox Shop is Alive
-      </h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/products" element={<ProductPage />} />
+      <Route path="/product/:id" element={<ProductDetailPage />} />
+      <Route path="/cart/" element={<CartPage />} />
+      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/compare" element={<ComparePage />} />
+      <Route path="/order-success" element={<OrderSuccessPage />} />
+      <Route path="/account/dashboard" element={<AccountDashboardPage />} />
+      <Route path="/account/wishlist" element={<WishlistPage />} />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 }
 

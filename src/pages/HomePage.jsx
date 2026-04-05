@@ -1,5 +1,11 @@
+import Navbar from "../components/common/Navbar";
+
 function HomePage() {
-  return <div className="p-2 text-2xl font-bold">Home Page</div>;
+  return (
+    <>
+      <Navbar />
+    </>
+  );
 }
 
 export default HomePage;

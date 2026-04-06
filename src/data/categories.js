@@ -154,7 +154,10 @@ export const categories = [
       },
       { label: "Smart Rings", items: ["Oura Ring", "Health Rings"] },
       { label: "Wearable Cameras", items: ["Body Cam", "Clip Cameras"] },
-      { label: "Kids Wearables", items: ["Kids Smartwatch", "GPS Bands"] },
+      {
+        label: "Kids Wearables",
+        items: ["Kids Smartwatch", "GPS Bands"],
+      },
     ],
   },
 ];

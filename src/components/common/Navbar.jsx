@@ -35,7 +35,7 @@ function MegaMenu() {
     <div className="absolute top-full left-0 bg-white text-gray-800 shadow-2xl z-50 flex">
       {/* ── LEVEL 1: Main Categories ── */}
       <ul className="w-56 py-2 border-r border-gray-100">
-        {categories.map((cat) => (
+        {categories.slice(0, 11).map((cat) => (
           <li
             key={cat.label}
             // When the mouse enters a category row, set it as active
@@ -77,7 +77,7 @@ function MegaMenu() {
       {/* Only shows when a category is being hovered */}
       {activeCategoryData && (
         <ul className="w-52 py-2 border-r border-gray-100">
-          {activeCategoryData.subcategories.map((sub) => (
+          {activeCategoryData.subcategories.slice(0, 10).map((sub) => (
             <li
               key={sub.label}
               onMouseEnter={() => setActiveSubcategory(sub.label)}
@@ -115,7 +115,7 @@ function MegaMenu() {
       {/* Only shows when a subcategory is being hovered */}
       {activeSubcategoryData && (
         <ul className="w-52 py-2">
-          {activeSubcategoryData.items.map((item) => (
+          {activeSubcategoryData.items.slice(0, 3).map((item) => (
             <li key={item}>
               <Link
                 to={`/products?category=${encodeURIComponent(activeCategoryData.label)}&sub=${encodeURIComponent(activeSubcategory)}&item=${encodeURIComponent(item)}`}
@@ -165,7 +165,7 @@ function Navbar() {
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="flex flex-1 max-w-xl mx-auto">
-          <div className="relative flex-1 flex items-center border border-gray-300 rounded-l-md px-3">
+          <div className="relative flex-1 flex items-center  px-3">
             <Search
               className="text-gray-400 w-4 h-4 shrink-0"
               strokeWidth={1.5}

@@ -13,6 +13,7 @@ import AccountDashboardPage from "./pages/AccountDashboardPage";
 import WishlistPage from "./pages/WishlistPage";
 import FaqPage from "./pages/FaqPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import Footer from "./components/common/Footer";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <Footer />
     </>
   );
 }

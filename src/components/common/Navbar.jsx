@@ -13,20 +13,15 @@ import gearbox_logo from "../../assets/gearbox_logo.png";
 // ─── DATA ──────────
 import { categories, navLinks } from "../../data/categories";
 
-// ─── MEGA MENU COMPONENT ─────────────────────────────────────────────────────
-// We pull the mega menu out into its own component to keep Navbar clean.
-// It receives the categories data as a prop.
+// ─── MEGA MENU COMPONENT ──
+// Mega menu component
 
 function MegaMenu() {
-  // These two states track WHICH category and subcategory the user is hovering.
-  // null means nothing is hovered yet.
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSubcategory, setActiveSubcategory] = useState(null);
 
-  // Find the full category object that matches the currently hovered label
   const activeCategoryData = categories.find((c) => c.label === activeCategory);
 
-  // Find the full subcategory object that matches the currently hovered label
   const activeSubcategoryData = activeCategoryData?.subcategories.find(
     (s) => s.label === activeSubcategory,
   );
@@ -140,7 +135,7 @@ function MegaMenu() {
   );
 }
 
-// ─── NAVBAR COMPONENT ────────────────────────────────────────────────────────
+// ─── NAVBAR COMPONENT ───
 
 function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -221,7 +216,7 @@ function Navbar() {
               Home
             </Link>
 
-            {/* Products dropdown — the whole div tracks hover */}
+            {/* Products dropdown */}
             <div
               className="relative"
               onMouseEnter={() => setShowMegaMenu(true)}
@@ -235,7 +230,7 @@ function Navbar() {
               {showMegaMenu && <MegaMenu />}
             </div>
 
-            {/* Rest of nav links */}
+            {/* nav links reset */}
             {navLinks.slice(1).map((link) => (
               <Link
                 key={link.path}

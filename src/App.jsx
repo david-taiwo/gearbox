@@ -3,6 +3,7 @@ import Navbar from "./components/common/Navbar";
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import BestDealsPage from "./pages/BestDealsPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import LoginPage from "./pages/LoginPage";
@@ -32,6 +33,7 @@ function App() {
         <Route path="/account/dashboard" element={<AccountDashboardPage />} />
         <Route path="/account/wishlist" element={<WishlistPage />} />
         <Route path="/faq" element={<FaqPage />} />
+        <Route path="/products/best-deals" element={<BestDealsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />

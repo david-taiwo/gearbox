@@ -30,39 +30,42 @@ function StarRating({ rating, reviewCount, showCount = true }) {
 }
 
 // ── BADGE SUB-COMPONENT ──
-function Badge({ product }) {
-  // Priority order: Sold Out > Hot > Best Seller > Sale > New
+function Badge({ product, badgeType = "all" }) {
   if (product.isSoldOut) {
     return (
-      <span className="absolute top-2 left-2 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded">
+      <span className="absolute top-2 left-2 bg-gray-400 text-white text-xs font-bold px-2 py-0.5 ">
         SOLD OUT
       </span>
     );
   }
-  if (product.isHot) {
-    return (
-      <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded">
-        HOT
-      </span>
-    );
+  // These only show when badgeType is "all"
+  if (badgeType === "all") {
+    if (product.isHot) {
+      return (
+        <span className="absolute top-2 left-2 bg-[#F48484] text-white text-xs font-bold px-2 py-0.5 ">
+          HOT
+        </span>
+      );
+    }
+    if (product.isBestSeller) {
+      return (
+        <span className="absolute top-2 left-2 bg-[#86CBF8] text-white text-xs font-bold px-2 py-0.5 ">
+          BEST
+        </span>
+      );
+    }
   }
-  if (product.isBestSeller) {
-    return (
-      <span className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded">
-        BEST
-      </span>
-    );
-  }
+  // % OFF shows in both modes
   if (product.discount) {
     return (
-      <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded">
+      <span className="absolute top-2 left-2 bg-[#F4E9AF] text-white text-xs font-bold px-2 py-0.5 ">
         {product.discount}% OFF
       </span>
     );
   }
-  if (product.isNew) {
+  if (badgeType === "all" && product.isNew) {
     return (
-      <span className="absolute top-2 left-2 bg-[#2966DC] text-white text-xs font-bold px-2 py-0.5 rounded">
+      <span className="absolute top-2 left-2 bg-[#2966DC] text-white text-xs font-bold px-2 py-0.5 ">
         NEW
       </span>
     );
@@ -71,20 +74,25 @@ function Badge({ product }) {
 }
 
 // ── MAIN PRODUCT CARD ───
-function ProductCard({ product, showRating = true }) {
+function ProductCard({
+  product,
+  showRating = true,
+  showBadge = true,
+  badgeType = "all",
+}) {
   return (
-    <div className="group relative bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col">
+    <div className="group relative bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col">
       {/* ── IMAGE AREA ── */}
-      <div className="relative overflow-hidden bg-gray-50 aspect-square">
+      <div className="relative overflow-hidden  aspect-square">
         {/* Badge — HOT, SOLD OUT, % OFF etc */}
-        <Badge product={product} />
+        {showBadge && <Badge product={product} badgeType={badgeType} />}
 
         {/* Sold out overlay */}
         {product.isSoldOut && (
-          <div className="absolute inset-0 bg-white/60 z-10" />
+          <div className="absolute inset-0 bg-gray-400/60 z-10" />
         )}
 
-        {/* Product image — links to detail page */}
+        {/* Product image */}
         <Link to={`/products/${product.id}`}>
           <img
             src={product.image}
@@ -94,7 +102,6 @@ function ProductCard({ product, showRating = true }) {
         </Link>
 
         {/* ── Hover action icons ── */}
-        {/* These only appear when the card is hovered */}
         <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
           <button
             className="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:bg-[#2966DC] hover:text-white transition-colors"

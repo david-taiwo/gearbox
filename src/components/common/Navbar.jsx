@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
@@ -138,6 +140,9 @@ function MegaMenu() {
 // ─── NAVBAR COMPONENT ───
 
 function Navbar() {
+  const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const navigate = useNavigate();
@@ -183,17 +188,29 @@ function Navbar() {
 
         {/* Icons */}
         <div className="flex items-center gap-5 shrink-0">
+          {/* Cart icon with count badge */}
           <Link
             to="/cart"
-            className="text-gray-700 hover:text-[#2966DC] transition-colors"
+            className="relative text-gray-700 hover:text-[#2966DC] transition-colors"
           >
             <ShoppingCart strokeWidth={1.5} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#2966DC] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                {cartCount}
+              </span>
+            )}
           </Link>
+          {/* Wishlist icon with count badge */}
           <Link
             to="/account/wishlist"
-            className="text-gray-700 hover:text-[#2966DC] transition-colors"
+            className="relative text-gray-700 hover:text-[#2966DC] transition-colors"
           >
             <Heart strokeWidth={1.5} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
           <Link
             to="/login"
@@ -217,15 +234,17 @@ function Navbar() {
             </Link>
 
             {/* Products dropdown */}
+
             <div
               className="relative"
               onMouseEnter={() => setShowMegaMenu(true)}
               onMouseLeave={() => setShowMegaMenu(false)}
             >
-              <button className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center gap-1">
-                Products <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
-              </button>
-
+              <Link to="/products">
+                <button className="px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center gap-1">
+                  Products <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
+                </button>
+              </Link>
               {/* MegaMenu renders here, still inside the hover zone */}
               {showMegaMenu && <MegaMenu />}
             </div>

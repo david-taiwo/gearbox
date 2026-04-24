@@ -1,3 +1,7 @@
+import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
+import { useToast } from "../../context/ToastContext";
+
 import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Eye } from "lucide-react";
 
@@ -80,6 +84,11 @@ function ProductCard({
   showBadge = true,
   badgeType = "all",
 }) {
+  const { addToCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+
+  const { showToast } = useToast();
+
   return (
     <div className="group relative bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col">
       {/* ── IMAGE AREA ── */}
@@ -103,15 +112,60 @@ function ProductCard({
 
         {/* ── Hover action icons ── */}
         <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+          {/* Wishlist button */}
           <button
-            className="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:bg-[#2966DC] hover:text-white transition-colors"
-            title="Add to Wishlist"
+            onClick={() => {
+              toggleWishlist(product);
+              showToast(
+                isInWishlist(product.id)
+                  ? "Removed from wishlist"
+                  : "Added to wishlist",
+                isInWishlist(product.id) ? "info" : "success",
+              );
+            }}
+            className={`w-8 h-8 bg-white rounded-full shadow flex items-center justify-center transition-colors
+    ${
+      isInWishlist(product.id)
+        ? "bg-red-50 text-red-300"
+        : "hover:bg-[#2966DC] hover:text-white"
+    }`}
+            title={
+              isInWishlist(product.id)
+                ? "Remove from Wishlist"
+                : "Add to Wishlist"
+            }
           >
-            <Heart className="w-4 h-4" />
+            <Heart
+              className={`w-4 h-4 ${isInWishlist(product.id) ? "fill-red-300" : ""}`}
+            />
           </button>
+
+          {/* Add to Cart button */}
           <button
-            className="w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:bg-[#2966DC] hover:text-white transition-colors"
-            title="Add to Cart"
+            onClick={() => {
+              if (product.isSoldOut) {
+                showToast("Item is sold out!", "error");
+                return;
+              }
+              addToCart(product);
+              showToast(
+                `${product.name.slice(0, 30)}... added to cart`,
+                "success",
+              );
+            }}
+            className={`w-8 h-8 bg-white rounded-full shadow flex items-center justify-center transition-colors
+    ${
+      isInCart(product.id)
+        ? "bg-blue-50 text-[#2966DC]"
+        : "hover:bg-[#2966DC] hover:text-white"
+    }`}
+            title={
+              product.isSoldOut
+                ? "Item sold out"
+                : isInCart(product.id)
+                  ? "Already in Cart"
+                  : "Add to Cart"
+            }
           >
             <ShoppingCart className="w-4 h-4" />
           </button>

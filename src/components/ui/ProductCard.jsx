@@ -2,6 +2,9 @@ import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { useToast } from "../../context/ToastContext";
 
+import { useCompare } from "../../context/CompareContext";
+import { GitCompare } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Eye } from "lucide-react";
 
@@ -176,6 +179,20 @@ function ProductCard({
           >
             <Eye className="w-4 h-4" />
           </Link>
+
+          {/* Compare button */}
+          <button
+            onClick={() => addToCompare(product)}
+            className={`w-8 h-8 bg-white rounded-full shadow flex items-center justify-center transition-colors
+    ${
+      isInCompare(product.id)
+        ? "bg-blue-50 text-[#2966DC]"
+        : "hover:bg-[#2966DC] hover:text-white"
+    }`}
+            title="Add to Compare"
+          >
+            <GitCompare className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
